@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-module Gradic
-  # This module holds the Gradic version information.
+module Enf
+  # This module holds the Enf version information.
   module Version
     STRING = '0.0.0'
 

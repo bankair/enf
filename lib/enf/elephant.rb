@@ -1,18 +1,19 @@
 # encoding: utf-8
 
-module Gradic
+module Enf
   # Represent a node of the graph
-  class Node
+  class Elephant
     class CannotRegister < RuntimeError; end
 
-    def initialize
-      @leave = false
-      @children = Hash.new { |hash, key| hash[key] = Node.new }
+    def initialize(default_leave_value = false)
+      @default_leave_value = default_leave_value
+      @leave = default_leave_value
+      @children = Hash.new { |hash, key| hash[key] = Elephant.new }
     end
 
-    def register!(element)
+    def register!(element, payload = true)
       fail CannotRegister if frozen? || invalid?(element)
-      return (@leave = true) if element.empty?
+      return (@leave = payload) if element.empty?
       @children[element[0]].register!(element[1..-1])
     end
 
@@ -31,7 +32,7 @@ module Gradic
     end
 
     def include?(element)
-      return false if invalid?(element)
+      return @default_leave_value if invalid?(element)
       return @leave if element.empty?
       @children.fetch(element[0]) { Nope.instance }.include?(element[1..-1])
     end

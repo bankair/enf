@@ -1,8 +1,7 @@
-require 'gradic/node'
-Node = Gradic::Node
-CannotRegister = Node::CannotRegister
-describe Node do
-  subject(:node) { Node.new }
+require 'enf/elephant'
+CannotRegister = Enf::Elephant::CannotRegister
+describe Enf::Elephant do
+  subject(:node) { Enf::Elephant.new }
   INVALID_INPUTS = [nil, 2].freeze
   VALID_INPUTS = [[1, 2, 3], 'string'].freeze
   ANY_INPUTS = (INVALID_INPUTS + VALID_INPUTS).freeze
@@ -79,8 +78,8 @@ describe Node do
     end
   end
 
-  describe Node::Nope do
-    subject(:nope) { Node::Nope.instance }
+  describe Enf::Elephant::Nope do
+    subject(:nope) { Enf::Elephant::Nope.instance }
     describe '#include?' do
       ANY_INPUTS.each do |any_input|
         it "return false when given #{any_input.inspect}" do

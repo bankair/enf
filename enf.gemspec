@@ -1,12 +1,12 @@
 # encoding: utf-8
 #
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
-require 'gradic/version'
+require 'enf/version'
 Gem::Specification.new do |s|
-  s.name = 'gradic'
+  s.name = 'enf'
   s.version = Gradic::Version::STRING
-  s.summary = 'Fast and memory lightweight white/black list implementation'
-  s.description = 'Graph based white/black list implementation'
+  s.summary = 'Elephants never forget'
+  s.description = 'Graph based white/black list implementation. Your elephant won\'t forget.'
   s.authors = ['Alexandre Ignjatovic']
   s.email = 'alexandre.ignjatovic@gmail.com'
   s.files = `git ls-files`.split($RS).reject do |file|
