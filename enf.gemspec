@@ -4,7 +4,7 @@ $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'enf/version'
 Gem::Specification.new do |s|
   s.name = 'enf'
-  s.version = Gradic::Version::STRING
+  s.version = Enf::Version::STRING
   s.summary = 'Elephants never forget'
   s.description = 'Graph based white/black list implementation. Your elephant won\'t forget.'
   s.authors = ['Alexandre Ignjatovic']

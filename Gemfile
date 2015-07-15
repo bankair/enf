@@ -9,5 +9,7 @@ group :test do
 end
 
 group :development, :test do
+  gem 'memory_profiler'
   gem 'pry-byebug'
+  gem 'benchmark-ips'
 end

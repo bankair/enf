@@ -23,74 +23,74 @@ describe Enf::Elephant do
     end
   end
 
-  ABC_IS_THE_ONLY_KNOWN_VALUE = "abc is the only known value" 
-  shared_examples ABC_IS_THE_ONLY_KNOWN_VALUE do
-    it { expect(node.include?('abc')).to be true }
-    it { expect(node.include?('')).to be false }
-    %w(a ab b abcd).each do |unknown|
-      it "do not include #{unknown.inspect}" do
-        expect(node.include?(unknown)).to be false
-      end
-    end
-  end
-
-  context 'When "abc" is registered' do
-    before(:each) { node.register! 'abc' }
-    it_behaves_like ABC_IS_THE_ONLY_KNOWN_VALUE
-    context 'When "abc" is registered a second time' do
-      before(:each) { node.register! 'abc' }
-      it_behaves_like ABC_IS_THE_ONLY_KNOWN_VALUE
-    end
-
-
-    context 'When "a" is registered' do
-      before(:each) { node.register! 'a' }
-      %w(a abc).each do |known|
-        it "include #{known.inspect}" do
-          expect(node.include?(known)).to be true
-        end
-      end
-      %w(ab b abcd).each do |unknown|
+  context 'When using default payload' do
+    ABC_IS_THE_ONLY_KNOWN_VALUE = 'abc is the only known value'
+    shared_examples ABC_IS_THE_ONLY_KNOWN_VALUE do
+      it { expect(node.include?('abc')).to be true }
+      it { expect(node.include?('')).to be false }
+      %w(a ab b abcd).each do |unknown|
         it "do not include #{unknown.inspect}" do
           expect(node.include?(unknown)).to be false
         end
       end
+    end
 
-      context 'When "abcd" is registered' do
-        before(:each) { node.register! 'abcd' }
-        %w(a abc abcd).each do |known|
+    context 'When "abc" is registered' do
+      before(:each) { node.register! 'abc' }
+      it_behaves_like ABC_IS_THE_ONLY_KNOWN_VALUE
+      context 'When "abc" is registered a second time' do
+        before(:each) { node.register! 'abc' }
+        it_behaves_like ABC_IS_THE_ONLY_KNOWN_VALUE
+      end
+
+      context 'When "a" is registered' do
+        before(:each) { node.register! 'a' }
+        %w(a abc).each do |known|
           it "include #{known.inspect}" do
             expect(node.include?(known)).to be true
           end
         end
-        %w(b ab).each do |unknown|
+        %w(ab b abcd).each do |unknown|
           it "do not include #{unknown.inspect}" do
             expect(node.include?(unknown)).to be false
           end
         end
-      end
 
-      context 'When "" (an empty string) is registered' do
-        before(:each) { node.register! '' }
-        it('include ""') { expect(node.include?('')).to be true }
-      end
+        context 'When "abcd" is registered' do
+          before(:each) { node.register! 'abcd' }
+          %w(a abc abcd).each do |known|
+            it "include #{known.inspect}" do
+              expect(node.include?(known)).to be true
+            end
+          end
+          %w(b ab).each do |unknown|
+            it "do not include #{unknown.inspect}" do
+              expect(node.include?(unknown)).to be false
+            end
+          end
+        end
 
-    end
-  end
-
-  describe Enf::Elephant::Nope do
-    subject(:nope) { Enf::Elephant::Nope.instance }
-    describe '#include?' do
-      ANY_INPUTS.each do |any_input|
-        it "return false when given #{any_input.inspect}" do
-          expect(nope.include?(any_input)).to be false
+        context 'When "" (an empty string) is registered' do
+          before(:each) { node.register! '' }
+          it('include ""') { expect(node.include?('')).to be true }
         end
       end
     end
-    describe '#register' do
-      ANY_INPUTS.each do |any_input|
-        it "raise error when given #{any_input}" do
-          expect { nope.register!(any_input) }.to raise_error CannotRegister
+
+    describe Enf::Elephant::Nope do
+      subject(:nope) { Enf::Elephant::Nope.instance }
+      describe '#include_impl' do
+        ANY_INPUTS.each do |any_input|
+          it "return false when given #{any_input.inspect}" do
+            expect(nope.include_impl(any_input)).to be false
+          end
+        end
+      end
+      describe '#register' do
+        ANY_INPUTS.each do |any_input|
+          it "raise error when given #{any_input}" do
+            expect { nope.register!(any_input) }.to raise_error CannotRegister
+          end
         end
       end
     end
