@@ -21,5 +21,6 @@ Gem::Specification.new do |s|
     )$}x
   end
   s.require_paths = ['lib']
+  s.homepage = 'https://github.com/bankair/enf'
   s.license = 'MIT'
 end
