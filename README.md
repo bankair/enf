@@ -2,6 +2,61 @@
 
 Memory lightweight implementation of a white/black list
 
+## Examples
+
+*Building a dictionnary of all terms used in 'Les misérables'*
+
+```ruby
+require 'open-uri'
+URI = 'https://www.gutenberg.org/ebooks/135.txt.utf-8'
+
+elephant = Enf::Elephant.new
+
+open(URI) do |file|
+  file.read.scan(/[[:alpha:]]*/).each do |token|
+    elephant.register! token.downcase
+  end
+end
+
+elephant.include? 'bonjour'
+# => true
+
+elephant.include? 'megadrive'
+# => false
+
+```
+
+*Building a shared blacklist with a rack app*
+
+```ruby
+require 'rack'
+require 'enf'
+require 'JSON'
+
+elephant = Enf::Elephant.new
+
+app = Proc.new do |env|
+  puts env.inspect
+  path = env.fetch('PATH_INFO')
+  case path 
+  when '/'
+    ['200', {'Content-Type' => 'text/html'}, ['A sample elephant black list rack app']]
+  when /^\/add\//
+    elephant.register!(token = path[5..-1])
+    ['200', {'Content-Type' => 'text/html'}, ["Registered '#{token}'"]]
+  when /^\/know\//
+    result = elephant.include?(token = path[6..-1])
+    ['200', {'Content-Type' => 'text/json'}, [{ token => result }.to_json]]
+  else
+    ['404', {'Content-Type' => 'text/html'}, ['Learn to talk elephantish']]
+  end
+end
+ 
+Rack::Handler::WEBrick.run app
+```
+
+
+
 ## Note on implementation
 
 Instead of storing all listed values like follow:
