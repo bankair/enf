@@ -2,6 +2,12 @@
 
 Memory lightweight implementation of a white/black list
 
+## Installation
+
+```
+gem install enf
+```
+
 ## Examples
 
 *Building a dictionnary of all terms used in 'Les misérables'*
@@ -106,7 +112,7 @@ Enf::Elephant are now able to propose completion candidates from a word
 beginning, thanks to the 'suggest' method:
 
 ```ruby
-require 'enf/suggest
+require 'enf/suggest'
 require 'open-uri'
 URI = 'https://www.gutenberg.org/ebooks/135.txt.utf-8'
 
