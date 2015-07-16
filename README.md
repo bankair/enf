@@ -7,6 +7,7 @@ Memory lightweight implementation of a white/black list
 *Building a dictionnary of all terms used in 'Les misérables'*
 
 ```ruby
+require 'enf'
 require 'open-uri'
 URI = 'https://www.gutenberg.org/ebooks/135.txt.utf-8'
 
@@ -99,6 +100,43 @@ volume of data, it is recommended to use it when memory matters most and
 when words are easily factorizable (example : as a black list for twitter
 spam bots).
 
+## Note on completion suggestions
+
+Enf::Elephant are now able to propose completion candidates from a word
+beginning, thanks to the 'suggest' method:
+
+```ruby
+require 'enf/suggest
+require 'open-uri'
+URI = 'https://www.gutenberg.org/ebooks/135.txt.utf-8'
+
+elephant = Enf::Elephant.new
+
+open(URI) do |file|
+  file.read.scan(/[[:alpha:]]*/).each do |token|
+    elephant.register! token.downcase
+  end
+end
+
+suggestions = elephant.suggest('ele', limit: 5, incompletes: false)
+# => #<Set: {"ven", "venth", "vate", "vated", "vates", "ment",
+#            "ments", "gant", "gance", "gy", "onore", "phant",
+#            "ct", "ctor", "ctric", "cted", "usiac"}>
+
+puts suggestions.map { |ending| 'ele' + ending }.inspect
+# => ["eleven", "eleventh", "elevate", "elevated", "elevates",
+#     "element", "elements", "elegant", "elegance", "elegy",
+#     "eleonore", "elephant", "elect", "elector", "electric",
+#     "elected", "eleusiac"]
+
+```
+
+*Parameters detail:*
+
+* The first non optional parameter is the beginning of the words to search for.
+* The limit optional parameter (default: :none) is the number of characters to allow the elephant to inquire for. That parameter allow 2 kinds of value: the :none symbol, that search deeply in the graph for corresponding completion candidates, or a strictly positive integer. (Example: with the value 2, the previous example would have only returned elegy and elect).
+* The incompletes optional parameter (default: false) is a boolean parameter allowing to add intermediates incompletes words to the result set. (Example: with limit = 2 and incompletes = true, the previous result set would have been: ['ve', 'va', 'me', 'ga', 'gy', 'on', 'ph', 'ct', 'us'])
+
 ## Next ?
 
 I will probably be working on:
@@ -107,6 +145,4 @@ I will probably be working on:
 (example: bar, in the previous example), a hash is created for every
 letter of that specific path. We have to merge theim as a single element
 to avoid useless hash creation.
-2. Completion: With that data structure, it will be quite easy and
-efficient to propose completion candidates from a start of word.
-3. tbd
+2. tbd
