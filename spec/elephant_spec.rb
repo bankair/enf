@@ -1,4 +1,7 @@
+# encoding: utf-8
+
 require 'enf/elephant'
+
 CannotRegister = Enf::Elephant::CannotRegister
 describe Enf::Elephant do
   subject(:node) { Enf::Elephant.new }

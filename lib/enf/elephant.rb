@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'enf/input'
+
 module Enf
   # Represent a node of the graph
   class Elephant
@@ -11,7 +13,7 @@ module Enf
     end
 
     def register!(element, payload = true)
-      fail CannotRegister if frozen? || invalid?(element)
+      fail CannotRegister if frozen? || Input.invalid?(element)
       return (@leave = payload) if element.empty?
       @children[element[0]].register!(element[1..-1])
     end
@@ -31,25 +33,13 @@ module Enf
     end
 
     def include?(element)
-      return @default_leave_value if invalid?(element)
+      return @default_leave_value if Input.invalid?(element)
       include_impl element
     end
 
     def include_impl(element)
       return @leave if element.empty?
       @children.fetch(element[0]) { Nope.instance }.include_impl(element[1..-1])
-    end
-
-    protected
-
-    require 'set'
-
-    AUTHORIZED_TYPES = Set.new([String, Array]).freeze
-
-    def invalid?(element)
-      return true if element.nil?
-      return true unless AUTHORIZED_TYPES.include? element.class
-      false
     end
   end
 end
