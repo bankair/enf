@@ -38,6 +38,21 @@ describe Enf::Elephant do
       end
     end
 
+    context 'When using arrays as element sequences' do
+      before(:each) do
+        node.register! [1]
+        node.register! [1, 2]
+        node.register! [2, 3]
+        node.register! [1, 2, 3]
+      end
+      it { expect(node.include? [1] ).to be true }
+      it { expect(node.include? [1, 2] ).to be true }
+      it { expect(node.include? [1, 2, 3] ).to be true }
+      it { expect(node.include? [2, 3] ).to be true }
+      it { expect(node.include? [3] ).to be false }
+      it { expect(node.include? [1, 3] ).to be false }
+    end
+
     context 'When "abc" is registered' do
       before(:each) { node.register! 'abc' }
       it_behaves_like ABC_IS_THE_ONLY_KNOWN_VALUE

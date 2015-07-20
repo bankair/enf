@@ -24,23 +24,30 @@ module Enf
     end
 
     def suggest_impl(start, limit, incompletes, prefix = '', results = Set.new)
-      if start == ''
-        return results if limit != :none && limit < 0
-        results << prefix if @leave || (incompletes && limit == 0)
-        limit = limit - 1 unless limit == :none
-        if limit == :none || limit >= 0
-          @children.each do |key, child|
-            new_prefix = prefix + key
-            results =
-              child.suggest_impl(start, limit, incompletes, new_prefix, results)
-          end
-        end
-      else
-        child = @children.fetch(start[0]) { Silent.instance }
-        results =
-          child.suggest_impl(start[1..-1], limit, incompletes, prefix, results)
+      return complete(limit, incompletes, prefix, results) if start.empty?
+
+      child = @children.fetch(start[0]) { Silent.instance }
+      child.suggest_impl(start[1..-1], limit, incompletes, prefix, results)
+    end
+
+    def complete(limit, incompletes, prefix, results)
+      return results if limit != :none && limit < 0
+      add_current_prefix_if_needed(results, limit, incompletes, prefix)
+      limit = next_limit limit
+      return results unless limit == :none || limit >= 0
+      @children.each do |key, child|
+        results = child.complete(limit, incompletes, prefix + key, results)
       end
       results
+    end
+
+    def next_limit(limit)
+      return :none if limit == :none
+      limit - 1
+    end
+
+    def add_current_prefix_if_needed(results, limit, incompletes, prefix)
+      results << prefix if @leave || (incompletes && limit == 0)
     end
 
     class SuggestParamError < StandardError; end
