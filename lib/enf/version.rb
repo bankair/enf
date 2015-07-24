@@ -3,7 +3,7 @@
 module Enf
   # This module holds the Enf version information.
   module Version
-    STRING = '0.1.1'
+    STRING = '0.1.2'
 
     module_function
 
