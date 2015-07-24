@@ -18,23 +18,23 @@ module Enf
     class Silent
       require 'singleton'
       include Singleton
-      def suggest_impl(_start, _limit, _incompletes, _prefix, results)
+      def complete(_limit, _incompletes, _prefix, results)
         results
       end
     end
 
     def suggest_impl(start, limit, incompletes, prefix = '', results = Set.new)
-      return complete(limit, incompletes, prefix, results) if start.empty?
+      fetch_root(start).complete(limit, incompletes, prefix, results)
+    end
 
-      child = @children.fetch(start[0]) { Silent.instance }
-      child.suggest_impl(start[1..-1], limit, incompletes, prefix, results)
+    def fetch_root(start)
+      Elephant::FetchService.search_in(self, start) { Silent.instance }
     end
 
     def complete(limit, incompletes, prefix, results)
-      return results if limit != :none && limit < 0
       add_current_prefix_if_needed(results, limit, incompletes, prefix)
       limit = next_limit limit
-      return results unless limit == :none || limit >= 0
+      return results if limit != :none && limit < 0
       @children.each do |key, child|
         results = child.complete(limit, incompletes, prefix + key, results)
       end
@@ -64,10 +64,12 @@ module Enf
       raise SuggestParamError, error.message
     end
 
-    INVALID_ERR = 'Invalid input "%s"'
+    INVALID_ERR = 'Invalid input %s'
 
     def once_validated!(start, char_limit, return_incompletes)
-      fail SuggestParamError, INVALID_ERR % start if Input.invalid? start
+      if Input.invalid? start
+        fail SuggestParamError, INVALID_ERR % start.inspect
+      end
       char_limit = validate_char_limit!(char_limit)
       yield start, char_limit, return_incompletes
     end

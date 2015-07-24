@@ -96,14 +96,7 @@ describe Enf::Elephant do
     end
 
     describe Enf::Elephant::Nope do
-      subject(:nope) { Enf::Elephant::Nope.instance }
-      describe '#include_impl' do
-        ANY_INPUTS.each do |any_input|
-          it "return false when given #{any_input.inspect}" do
-            expect(nope.include_impl(any_input)).to be false
-          end
-        end
-      end
+      subject(:nope) { Enf::Elephant::Nope.new }
       describe '#register' do
         ANY_INPUTS.each do |any_input|
           it "raise error when given #{any_input}" do
